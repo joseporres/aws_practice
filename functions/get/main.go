@@ -1,7 +1,6 @@
-package get
+package main
 
 import (
-	"encoding/json"
 	"os"
 	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-sdk-go/aws"
@@ -11,12 +10,17 @@ import (
 )
 
 type Object struct {
-	pk string `json:"pk"`
-	sk string `json:"sk"`
-	name string `json:"name"`
+	Pk string `json:"pk"`
+	Sk string `json:"sk"`
+	Name string `json:"name"`
 }
 
-func getHello (event Object) (string, error) {
+type Object2 struct {
+	Pk string `json:"pk"`
+	Sk string `json:"sk"`
+}
+
+func getHello (event Object2) (string, error) {
 	TABLE_NAME := os.Getenv("GREETINGS_TABLE")
 
 
@@ -31,10 +35,10 @@ func getHello (event Object) (string, error) {
 		TableName: aws.String(TABLE_NAME),
 		Key: map[string]*dynamodb.AttributeValue{
 			"pk": {
-				S: aws.String(event.pk),
+				S: aws.String(event.Pk),
 			},
 			"sk": {
-				S: aws.String(event.sk),
+				S: aws.String(event.Sk),
 			},
 		},
 		
@@ -50,15 +54,15 @@ func getHello (event Object) (string, error) {
 
 	object := Object{}
 
-	item := dynamodbattribute.UnmarshalMap(result.Item, &object)
-	
-	data,err := json.Marshal(item)
+	err1 := dynamodbattribute.UnmarshalMap(result.Item, &object)
 
-	if err != nil {
+
+	if err1 != nil {
 		return "", err
 	}
 
-	return string(data), nil
+	str := "Hello " + object.Name + "!"
+	return str, nil
 
 }
 

@@ -1,4 +1,4 @@
-package put
+package main
 
 import (
 	"os"
@@ -10,9 +10,9 @@ import (
 )
 
 type Object struct {
-	pk string `json:"pk"`
-	sk string `json:"sk"`
-	name string `json:"name"`
+	Pk string `json:"pk"`
+	Sk string `json:"sk"`
+	Name string `json:"name"`
 }
 
 func saveHello(event Object) (string, error) {
@@ -24,7 +24,7 @@ func saveHello(event Object) (string, error) {
 	}
 
 	svc := dynamodb.New(sess)
-	object := Object{event.pk, event.sk, event.name}
+	object := Object{event.Pk, event.Sk, event.Name}
 	item, err := dynamodbattribute.MarshalMap(object)
 	if err != nil {
 		return "", err

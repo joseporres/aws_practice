@@ -18,56 +18,62 @@ Resources:
           KeyType: HASH
         - AttributeName: sk
           KeyType: RANGE
-      ProvisionedThroughput:
-        ReadCapacityUnits: 1
-        WriteCapacityUnits: 1
-
+      BillingMode: PAY_PER_REQUEST
   SaveHelloFunction:
     Type: 'AWS::Serverless::Function'
+    Metadata:
+      BuildMethod: makefile
     Properties:
-      Handler: saveHello
+      Handler: handler
       Runtime: go1.x
-      CodeUri: ./hello/put
       Policies: 
         - DynamoDBCrudPolicy:
             TableName: !Ref GreetingsTable
       Environment:
         Variables:
           GREETINGS_TABLE: !Ref GreetingsTable
-      Events:
-        Api:
-          Type: Api
-          Properties:
-            Path: /hello
-            Method: POST
 
-  GetHelloFUnction:
+  GetHelloFunction:
     Type: 'AWS::Serverless::Function'
+    Metadata:
+      BuildMethod: makefile
     Properties:
-      Handler: getHello
+      Handler: handler
       Runtime: go1.x
-      CodeUri: ./hello/get
       Policies:
         - DynamoDBCrudPolicy:
             TableName: !Ref GreetingsTable
       Environment:
         Variables:
           GREETINGS_TABLE: !Ref GreetingsTable
-      Events:
-        HelloApi:
-          Type: Api
-          Properties:
-            Path: /hello
-            Method: GET
 
-          
 
-        
+  DeleteHelloFunction:
+    Type: 'AWS::Serverless::Function'
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      Handler: handler
+      Runtime: go1.x
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref GreetingsTable
+      Environment:
+        Variables:
+          GREETINGS_TABLE: !Ref GreetingsTable
+  
+  UpdateHelloFunction:
+    Type: 'AWS::Serverless::Function'
+    Metadata:
+      BuildMethod: makefile
+    Properties:
+      Handler: handler
+      Runtime: go1.x
+      Policies:
+        - DynamoDBCrudPolicy:
+            TableName: !Ref GreetingsTable
+      Environment:
+        Variables:
+          GREETINGS_TABLE: !Ref GreetingsTable
 
-    
-    
-Outputs:
-  MyApi:
-    Description: "API Gateway endpoint URL"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
   
